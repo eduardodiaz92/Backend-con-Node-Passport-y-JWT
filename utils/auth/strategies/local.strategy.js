@@ -2,31 +2,28 @@ const { Strategy } = require('passport-local');
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 
-const UserService = require('../../../services/user.service');
-//Generando instancia del servicio
+const UserService = require('./../../../services/user.service');
 const service = new UserService();
 
-//Definiendo la estrategia, como callback recive la logica de negocios
 const LocalStrategy = new Strategy(
   {
-    usernameField: 'email',
-    passwordField: 'password',
+    // usernameField: 'email',
+    // passwordField: 'password',
   },
   async (email, password, done) => {
     try {
       const user = await service.findByEmail(email);
       if (!user) {
-        //Los errores se envian con el error y el false
-        done(boom.unauthorized(), false);
+        return done(null, false, boom.unauthorized());
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        done(boom.unauthorized(), false);
+        return done(null, false, boom.unauthorized());
       }
       delete user.dataValues.password;
-      done(null, user);
+      return done(null, user);
     } catch (error) {
-      done(error, false);
+      return done(error, false);
     }
   }
 );
