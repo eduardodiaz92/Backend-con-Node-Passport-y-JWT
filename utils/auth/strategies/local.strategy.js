@@ -7,8 +7,8 @@ const service = new UserService();
 
 const LocalStrategy = new Strategy(
   {
-    // usernameField: 'email',
-    // passwordField: 'password',
+    usernameField: 'email',
+    passwordField: 'password',
   },
   async (email, password, done) => {
     try {
