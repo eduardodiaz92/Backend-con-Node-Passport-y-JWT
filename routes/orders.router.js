@@ -11,6 +11,15 @@ const {
 const router = express.Router();
 const service = new OrderService();
 
+router.get(async (req, res, next) => {
+  try {
+    const order = await service.findAll();
+    res.json(order);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get(
   '/:id',
   validatorHandler(getOrderSchema, 'params'),
